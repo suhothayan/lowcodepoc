@@ -1,0 +1,46 @@
+{
+  "Nodes": {
+    "USAzcjiis1f": {
+      "id": "USAzcjiis1f",
+      "type": "creately.flowchart.startend",
+      "name": "Start",
+      "data": "{}"
+    },
+    "oWXIb6auuNy": {
+      "id": "oWXIb6auuNy",
+      "type": "creately.flowchart.data",
+      "name": "Accuweather",
+      "data": "{\"apiKey\":\"8dbh68Zg2J6WxAK37Cy2jVJTSMdnyAmV\", \"zip\":\"80000\", \"defaultOutputVariable\":\"accuweatherResult\"}"
+    },
+    "iBXRCxyHkXE": {
+      "id": "iBXRCxyHkXE",
+      "type": "creately.flowchart.process",
+      "name": "Data mapper",
+      "data": "{\"mapping\":\"string `Today is ${<string>accuweatherResult.dayWeather} and the night is ${<string>accuweatherResult.nightWeather}. Today's maximum temprature is ${<string>accuweatherResult.maxTemp}F and the minimum temprature is ${<string>accuweatherResult.minTemp}F. Have a great day!! ~this is ur Ballerina weather bot`\", \"defaultOutputVariable\":\"dataMapperResult\"}"
+    },
+    "WjlghSMKJlm": {
+      "id": "WjlghSMKJlm",
+      "type": "creately.flowchart.data",
+      "name": "Twilio",
+      "data": "{\"accountSID\":\"ACb2e9f049adcb98c7c31b913f8be70733\",\"authToken\":\"77fafc6fadcf31e09dde5a0557fee3f5\",\"fromNumber\": \"+14155238886\",\"toNumber\":\"+94773898282\",\"mapping\":\"string `Hi`\",\"defaultOutputVariable\":\"twillioResult\"}"
+    }
+  },
+  "Edges": {
+    "KK4BnPRkTAe": {
+      "source": "USAzcjiis1f",
+      "target": "oWXIb6auuNy"
+    },
+    "tkBqkqUtXuG": {
+      "source": "oWXIb6auuNy",
+      "target": "iBXRCxyHkXE"
+    },
+    "thfDJe5Lkrx": {
+      "source": "iBXRCxyHkXE",
+      "target": "WjlghSMKJlm"
+    },
+    "bGuSrCg1P0G": {
+      "source": "WjlghSMKJlm",
+      "target": ""
+    }
+  }
+}
