@@ -1,25 +1,29 @@
-import ballerina/io;
 import ballerina/http;
+import ballerina/io;
 
-public type Accuweather record {
-    string apiKey;
-    string stateCode;
+public type Client client object {
+
+    public string apiKey;
+    public http:Client accuClient;
+
+    public function __init(public string apiKey) {
+        self.accuClient = new("http://dataservice.accuweather.com");
+        self.apiKey = apiKey;
+    }
+
+    public remote function getDailyWeather(public string zip) returns json|error {
+        string requestPath = io:sprintf("/forecasts/v1/daily/1day/%s?apikey=%s", zip, self.apiKey);
+        var response = self.accuClient->get(requestPath);
+        if (response is http:Response) {
+            var payload = <@untainted> response.getJsonPayload();
+            if (payload is json) {
+                return payload;
+            } else {
+                return error("Failed to retreive json payload", err = payload);
+            }
+        } else {
+            return error("Failed to call the accuweather endpoint", err = response);
+        }
+    }
 };
 
-public function accuweather(map<string> config) returns json|error {
-    http:Client accuWeatherEP = new ("http://dataservice.accuweather.com");
-    http:Response weatherResp = new;
-    weatherResp = check accuWeatherEP->get(io:sprintf("/forecasts/v1/daily/1day/%s?apikey=%s", <string>config["zip"], 
-                    <string>config["apiKey"]));
-    json|error weatherData = weatherResp.getJsonPayload();
-    if(weatherData is json){
-        json[] daily = <json[]> weatherData.DailyForecasts;
-        return <@untainted> { dayWeather:daily[0].Day.IconPhrase.toString(),
-                    nightWeather:daily[0].Night.IconPhrase.toString(),
-                    minTemp:daily[0].Temperature.Minimum.Value.toString(),
-                    maxTemp:daily[0].Temperature.Maximum.Value.toString()
-                };
-    } else {
-        return error("Error while casting weather data to json");
-    }
-}
