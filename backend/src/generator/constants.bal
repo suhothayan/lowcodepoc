@@ -1,0 +1,14 @@
+const string JSON_KEYWORD = "json";
+const string WHITE_SPACE = " ";
+const string OPEN_CAST_SYMBOL = "<";
+const string CLOSE_CAST_SYMBOL = ">";
+const string ASSIGNMENT_SYMBOL = "=";
+const string STRING_KEYWORD = "string";
+const string COLON = ":";
+const string OPEN_PARAM = "(";
+const string CLOSE_PARAM = ")";
+const string OPEN_MAP_SYMBOL = "{";
+const string CLOSE_MAP_SYMBOL = "}";
+const string IMPORTS = "import lowCode/datamapper;\nimport wso2/twilio;\n";
+const string MAIN_FUNC_START = "public function main() {\n";
+const string MAIN_FUNC_END = "}";
