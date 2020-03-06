@@ -50,7 +50,14 @@ public function generateCode (json tree) returns ()|error {
     if (nodeAr is Node[]) {
         string importString = getImportString(nodeAr);
         io:print(importString);
-        io:println(generateMain(nodeAr));
+        string|error mainFunc = generateMain(nodeAr);
+        if mainFunc is string {
+            io:println(mainFunc);
+        } else{
+            return error("Received node map in creating main function is not a json", err=nodeAr);
+        }
+    } else {
+        return error ("Received node array is not a json", err=nodeAr);
     }
     return ();
 }
@@ -72,10 +79,10 @@ public function getNodes (json tree) returns Node[]|error {
             });
             return nodeArray;
         } else {
-            return error("Received node map is not a json");
+            return error("Received node map is not a json", err=nodeMap);
         }
     } else {
-        return error("Received nodes are not a json");
+        return error("Received nodes are not a json", err=nodes);
     }
 }
 
@@ -91,7 +98,7 @@ public function getImportString (Node[] nodes) returns string {
     return importString;
 }
 
-public function generateMain (Node[] nodes) returns @tainted string {
+public function generateMain (Node[] nodes) returns @tainted string| error {
     string mainFunc = "";
     mainFunc = mainFunc.concat(MAIN_FUNC_START);
     foreach var node in nodes {
@@ -106,7 +113,7 @@ public function generateMain (Node[] nodes) returns @tainted string {
                 mainFunc = mainFunc.concat(buildTwilioNode(<map<json>>jsonData));
             }
         } else {
-            
+            return error ("Received data is not a json", err=jsonData);
         }
     }
     mainFunc = mainFunc.concat(MAIN_FUNC_END);
