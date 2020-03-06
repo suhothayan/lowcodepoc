@@ -3,4 +3,3 @@ org-name= "lowCode"
 version= "0.1.0"
 
 [dependencies]
-"wso2/twilio" = {path= "/Users/tharindu/golang/src/github.com/test/module-twilio/target/balo/twilio-2019r3-any-0.8.32.balo"}

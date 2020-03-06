@@ -3,7 +3,22 @@ version = "0.1.0"
 lockfile_version = "1.0.0"
 ballerina_version = "1.1.4"
 
-[[imports."lowCode/whatsapp:0.1.0"]]
-org_name = "wso2"
+[[imports."lowCode/twilio:0.1.0"]]
+org_name = "ballerinax"
+name = "java"
+version = "0.0.0"
+
+[[imports."lowCode/balcodegen:0.1.0"]]
+org_name = "lowCode"
+name = "accuweather"
+version = "0.1.0"
+
+[[imports."lowCode/balcodegen:0.1.0"]]
+org_name = "lowCode"
+name = "datamapper"
+version = "0.1.0"
+
+[[imports."lowCode/balcodegen:0.1.0"]]
+org_name = "lowCode"
 name = "twilio"
-version = "0.8.32"
+version = "0.1.0"
