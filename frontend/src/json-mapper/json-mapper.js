@@ -19,16 +19,17 @@ function filteredJSON(json) {
                 if (shapes[key].hasOwnProperty("texts")) {
                     let node = {
                         id: shapes[key]["id"],
-                        name: shapes[key]["texts"]["identifier"]["content"][0]["text"],
+                        text: shapes[key]["texts"]["identifier"]["content"][0]["text"],
+                        name: ((shapes[key]["texts"]["identifier"]["content"][0]["text"]).replace(/\s/g, '')).toLowerCase(),
                         type: shapes[key]["defId"],
                         data: {}
                     }
-                    // nodes.push(node);
                     nodes[key]=node;
-                } else {
+                } else if (shapes[key]["defId"] == "creately.flowchart.startend") {
                     let node = {
                         id: shapes[key]["id"],
-                        name: shapes[key]["defId"],
+                        text: "Start",
+                        name: "start",
                         type: shapes[key]["defId"],
                         data: {}
                     }
@@ -45,5 +46,3 @@ function filteredJSON(json) {
 
     console.log(JSON.stringify(result));
 }
-
-
