@@ -121,13 +121,13 @@ public function generateMain (Node[] nodes) returns @tainted string| error {
 }
 
 public function buildAccuweatherNode (json data) returns string {
-    return string `accuweather:Client accuweatherClient= new({ apiKey: \"${<string>data.apiKey}\"}); \njson ${<string>data.defaultOutputVariable} = <json> accuweatherClient->weatherToday(zip= \"${<string>data.zip}\");\n`;
+    return string `accuweather:Client accuweatherClient= new(\"${<string>data.apiKey}\"); \naccuweather:WeatherResponse ${<string>data.defaultOutputVariable} = check accuweatherClient->getDailyWeather(\"${<string>data.zip}\");\n`;
 }
 
 public function buildDatamapperNode (json data) returns string {
-    return string `json ${<string>data.defaultOutputVariable} = <json> datamapper:datamapper({mapping: ${<string>data.mapping}});\n`;
+    return string `string ${<string>data.defaultOutputVariable} = <string> datamapper:datamapper({mapping: ${<string>data.mapping}});\n`;
 }
 
 public function buildTwilioNode (map<json> data) returns string {
-    return string `twilio:Client twilioClient = new({ accountSId: \"${<string>data.accountSID}\",\nauthToken: \"${<string>data.authToken}\",\nxAuthyKey: ""\n});\nvar ${<string>data.defaultOutputVariable} = twilioClient->sendWhatsAppMessage(\n\"${<string>data.fromNumber}\",\n\"${<string>data.toNumber}\",\n<string>${<string>data.mapping});\n`;
+    return string `twilio:Client twilioClient = new({ accountSId: \"${<string>data.accountSID}\",\nauthToken: \"${<string>data.authToken}\",\nxAuthyKey: ""\n});\ntwilio:WhatsAppResponse ${<string>data.defaultOutputVariable} = check twilioClient->sendWhatsAppMessage(\n\"${<string>data.fromNumber}\",\n\"${<string>data.toNumber}\",\n<string>${<string>data.mapping});\n`;
 }
