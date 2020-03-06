@@ -118,7 +118,7 @@ public type Client client object {
     # + toNo - Mobile number by which the WhatsApp message should be received
     # + message - Message body of the WhatsApp message
     # + return - If success, returns a WhatsAppResponse object, else returns an error
-    public remote function sendWhatsAppMessage(string fromNo, string toNo, string message) returns @tainted WhatsAppResponse|error {
+    public remote function sendWhatsAppMessage(string fromNo, string toNo, string message) returns @untainted  WhatsAppResponse|error {
         http:Request req = new;
 
         string requestBody = "";
