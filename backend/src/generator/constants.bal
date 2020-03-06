@@ -15,3 +15,4 @@ const string MAIN_FUNC_END = "}";
 const string IMPORT_KEYWORD = "import";
 const string MODULE_NAME = "lowCode";
 const string SLASH = "/";
+const string SEMI_COLON = ":";
