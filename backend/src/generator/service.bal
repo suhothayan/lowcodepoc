@@ -1,6 +1,5 @@
 import ballerina/http;
 import ballerina/log;
-import ballerina/io;
 // import ballerina/io;
 
 service lowcode on new http:Listener(9090) {
@@ -32,7 +31,6 @@ service lowcode on new http:Listener(9090) {
     }
     resource function schema(http:Caller caller, http:Request req, string connectorName) {
         json responseJson;
-        io:println(connectorName);
         if (connectorName == "Accuweather") {
             responseJson = {
                 name: "Accuweather",
@@ -61,7 +59,7 @@ service lowcode on new http:Listener(9090) {
                     {"type": "input", label: "Account SID", id: "accountSID"},
                     {"type": "input", label: "Auth Token", id: "authToken"}
                 ],
-                defaultOutputVariable: "accuweatherResult"
+                defaultOutputVariable: "twillioResult"
             };
         } else {
             responseJson = "";
