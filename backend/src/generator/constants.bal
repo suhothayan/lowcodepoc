@@ -12,3 +12,6 @@ const string CLOSE_MAP_SYMBOL = "}";
 const string IMPORTS = "import lowCode/datamapper;\nimport wso2/twilio;\n";
 const string MAIN_FUNC_START = "public function main() {\n";
 const string MAIN_FUNC_END = "}";
+const string IMPORT_KEYWORD = "import";
+const string MODULE_NAME = "lowCode";
+const string SLASH = "/";

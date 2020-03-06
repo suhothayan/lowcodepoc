@@ -1,6 +1,6 @@
 import ballerina/io;
 
-type Node record {|
+public type Node record {|
     json|error id;
     json|error name;
     json|error data;
@@ -21,26 +21,15 @@ public function generateCode (json tree) returns ()|error {
                     name: value.name,
                     data: value.data
                 };
-                json|error formData = value.data;
-                if (node.name is json && formData is json) {
+                io:StringReader sr = new(value.data.toString(), encoding = "UTF-8");
+                json|error jsonData = sr.readJson();
+                if (node.name is json && jsonData is json) {
                     if (node.name == "Accuweather") {
-                        io:StringReader sr = new(formData.toString(), encoding = "UTF-8");
-                        json|error j = sr.readJson();
-                        if j is json {
-                            balFile = balFile.concat(buildAccuweatherNode(<json>j));
-                        }
+                        balFile = balFile.concat(buildAccuweatherNode(<json>jsonData));
                     } else if (node.name == "Data mapper") {
-                        io:StringReader sr = new(formData.toString(), encoding = "UTF-8");
-                        json|error j = sr.readJson();
-                        if j is json {
-                            balFile = balFile.concat(buildDatamapperNode(<map<json>>j));
-                        }
+                        balFile = balFile.concat(buildDatamapperNode(<map<json>>jsonData)); 
                     } else if (node.name == "Twilio") {
-                        io:StringReader sr = new(formData.toString(), encoding = "UTF-8");
-                        json|error j = sr.readJson();
-                        if j is json {
-                            balFile = balFile.concat(buildTwilioNode(<map<json>>j));
-                        }
+                        balFile = balFile.concat(buildTwilioNode(<map<json>>jsonData));
                     }
                 }
                 nodeArray.push(node);
@@ -56,6 +45,74 @@ public function generateCode (json tree) returns ()|error {
     return ();
 }
 
+// public function generateCode (json tree) returns ()|error {
+//     Node[]|error nodeAr = getNodes(tree);
+//     if (nodeAr is Node[]) {
+//         string importString = getImportString(nodeAr);
+//         io:print(importString);
+//         io:println(generateMain(nodeAr));
+//     }
+//     return ();
+// }
+
+public function getNodes (json tree) returns Node[]|error {
+    json|error nodes = tree.Nodes;
+    if (nodes is json) {
+        map<json>|error nodeMap = map<json>.constructFrom(nodes);
+        if nodeMap is map<json> {
+            // populating the recods array
+            Node[] nodeArray = [];
+            nodeMap.forEach(function (json value) {
+                Node node = {
+                    id: value.id,
+                    name: value.name,
+                    data: value.data
+                };
+                nodeArray.push(node);
+            });
+            return nodeArray;
+        } else {
+            return error("Received node map is not a json");
+        }
+    } else {
+        return error("Received nodes are not a json");
+    }
+}
+
+public function getImportString (Node[] nodes) returns string {
+    string importString = "";
+    foreach var node in nodes {
+        if (node.name.toString() != "Start") {
+            string name = node.name.toString().substring(0,1).toLowerAscii().concat(node.name.toString().substring(1,node.name.toString().length()));
+            io:println(name);
+            importString = importString.concat(IMPORT_KEYWORD + WHITE_SPACE + MODULE_NAME + SLASH + name + "\n");
+        }
+    }
+    return importString;
+}
+
+public function generateMain (Node[] nodes) returns @tainted string {
+    string mainFunc = "";
+    mainFunc = mainFunc.concat(MAIN_FUNC_START);
+    foreach var node in nodes {
+        io:StringReader sr = new(node.data.toString(), encoding = "UTF-8");
+        json|error jsonData = sr.readJson();
+        if (node.name is json && jsonData is json) {
+            if (node.name == "Accuweather") {
+                mainFunc = mainFunc.concat(buildAccuweatherNode(<json>jsonData));
+            } else if (node.name == "Data mapper") {
+                mainFunc = mainFunc.concat(buildDatamapperNode(<map<json>>jsonData)); 
+            } else if (node.name == "Twilio") {
+                mainFunc = mainFunc.concat(buildTwilioNode(<map<json>>jsonData));
+            }
+        } else {
+            
+        }
+    }
+    mainFunc = mainFunc.concat(MAIN_FUNC_END);
+    return mainFunc;
+}
+
 public function buildAccuweatherNode (json data) returns string {
     return string `accuweather:Client accuweatherClient= new({ apiKey: \"${<string>data.apiKey}\"}); \njson ${<string>data.defaultOutputVariable} = <json> accuweatherClient->weatherToday(zip= \"${<string>data.zip}\");\n`;
 }
@@ -66,19 +123,5 @@ public function buildDatamapperNode (json data) returns string {
 }
 
 public function buildTwilioNode (map<json> data) returns string {
-    // io:println();
-    // json|error token = data.authToken;
-    // if(token is error){
-    //     io:println(token.detail());
-    // } 
-
-    // io:println(token);
-    // return "";
     return string `twilio:Client twilioClient = new({ accountSId: \"${<string>data.accountSID}\",\nauthToken: \"${<string>data.authToken}\",\nxAuthyKey: ""\n});\nvar ${<string>data.defaultOutputVariable} = twilioClient->sendWhatsAppMessage(\n\"${<string>data.fromNumber}\",\n\"${<string>data.toNumber}\",\n<string>${<string>data.mapping});\n`;
 }
-
-// public function generateStatment (json tree) {
-//     string statemnt = string `${JSON_KEYWORD}${WHITE_SPACE}${resultVar}${ASSIGNMENT_SYMBOL}${OPEN_CAST_SYMBOL}
-//                             ${JSON_KEYWORD}${CLOSE_CAST_SYMBOL}${importPackage}${COLON}${connectorName}${OPEN_PARAM}
-//                             ${OPEN_MAP_SYMBOL}${keyValuePairs}${CLOSE_MAP_SYMBOL}${CLOSE_PARAM}`; 
-// }
