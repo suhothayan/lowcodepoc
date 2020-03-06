@@ -1,6 +1,5 @@
 import ballerina/http;
 import ballerina/log;
-import ballerina/io;
 // import ballerina/io;
 
 service lowcode on new http:Listener(9090) {
@@ -32,9 +31,9 @@ service lowcode on new http:Listener(9090) {
     }
     resource function schema(http:Caller caller, http:Request req, string connectorName) {
         json responseJson;
-        io:println(connectorName);
         if (connectorName == "Accuweather") {
             responseJson = {
+                name: "Accuweather",
                 inputs: [
                     {"type": "input", label: "ZIP code", id: "zip"},
                     {"type": "input", label: "API key", id: "apiKey"}
@@ -43,6 +42,7 @@ service lowcode on new http:Listener(9090) {
             };
         } else if (connectorName == "DataMapper") {
             responseJson = {
+                name: "DataMapper",
                 inputs: [
                     {"type": "textarea", label: "Mapping", "default": "", id:"mapping",
                         info: "Use `${...}` to map the variables in the mapping"
@@ -52,13 +52,14 @@ service lowcode on new http:Listener(9090) {
             };
         } else if (connectorName == "Twillio") {
             responseJson = {
+                name: "Twillio",
                 inputs: [
                     {"type": "input", label: "From Number", id: "fromNumber"},
                     {"type": "input", label: "To Number", id: "toNumber"},
                     {"type": "input", label: "Account SID", id: "accountSID"},
-                    {"type": "input", label: "Auth Token", id: "twillioResult"}
+                    {"type": "input", label: "Auth Token", id: "authToken"}
                 ],
-                defaultOutputVariable: "accuweatherResult"
+                defaultOutputVariable: "twillioResult"
             };
         } else {
             responseJson = "";
